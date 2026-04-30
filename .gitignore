@@ -1,6 +1,11 @@
 /AGENTS.md
 /context/
 /audit/html/
+/poc-chat/backend/target/
+/poc-chat/frontend/node_modules/
+/poc-chat/frontend/.angular/
+/poc-chat/frontend/dist/
+/poc-chat/frontend/.vscode/
 
 # Local tool/cache files
 /.codex
