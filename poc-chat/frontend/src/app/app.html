@@ -1,0 +1,155 @@
+<main class="shell">
+  <header class="hero">
+    <div>
+      <p class="eyebrow">Your Car Your Way</p>
+      <h1>PoC tchat temps réel</h1>
+      <p class="lede">
+        POC Angular + Spring Boot centré sur les WebSockets, avec une vue client à
+        gauche et une vue support à droite.
+      </p>
+    </div>
+    <div class="status-card">
+      <span class="status-dot"></span>
+      @if (isBootstrapping()) {
+        <span>Chargement des conversations...</span>
+      } @else {
+        <span>{{ conversations().length }} conversation(s) en mémoire</span>
+      }
+    </div>
+  </header>
+
+  <section class="workspace">
+    <article class="panel">
+      <div class="panel-header">
+        <div>
+          <p class="panel-kicker">Vue client</p>
+          <h2>Client simulé</h2>
+        </div>
+        <button class="primary-button" type="button" (click)="createDemoUser()" [disabled]="isCreatingUser()">
+          {{ isCreatingUser() ? 'Création...' : 'Créer un utilisateur' }}
+        </button>
+      </div>
+
+      <label class="field">
+        <span>Utilisateur actif</span>
+        <select
+          [ngModel]="activeClientUserId()"
+          (ngModelChange)="onClientUserChange($event)"
+          [disabled]="users().length === 0"
+        >
+          <option [ngValue]="null">Sélectionner un utilisateur</option>
+          @for (user of users(); track user.id) {
+            <option [value]="user.id">{{ user.displayName }}</option>
+          }
+        </select>
+      </label>
+
+      <div class="conversation-meta">
+        @if (activeClientUser()) {
+          <span>{{ activeClientUser()?.displayName }}</span>
+          <span>ID conversation: {{ activeClientConversation()?.id }}</span>
+        } @else {
+          <span>Aucun utilisateur actif</span>
+        }
+      </div>
+
+      <section class="message-board">
+        @if (clientMessages().length === 0) {
+          <p class="empty-state">Aucun message pour le moment.</p>
+        } @else {
+          @for (message of clientMessages(); track message.id) {
+            <article class="message" [class.message-outgoing]="isOutgoingMessage(message, 'CLIENT')">
+              <p class="message-role">{{ message.senderRole === 'CLIENT' ? 'Client' : 'Support' }}</p>
+              <p class="message-body">{{ message.body }}</p>
+              <time class="message-time">{{ message.sentAt | date: 'HH:mm:ss' }}</time>
+            </article>
+          }
+        }
+      </section>
+
+      <div class="composer">
+        <textarea
+          rows="3"
+          [ngModel]="clientDraft()"
+          (ngModelChange)="clientDraft.set($event)"
+          [disabled]="!activeClientConversation()"
+          placeholder="Envoyer un message côté client"
+        ></textarea>
+        <button class="secondary-button" type="button" (click)="sendClientMessage()" [disabled]="!activeClientConversation()">
+          Envoyer
+        </button>
+      </div>
+    </article>
+
+    <article class="panel">
+      <div class="panel-header">
+        <div>
+          <p class="panel-kicker">Vue support</p>
+          <h2>Conseiller simulé</h2>
+        </div>
+      </div>
+
+      <section class="support-grid">
+        <aside class="conversation-list">
+          <h3>Conversations</h3>
+          @if (conversations().length === 0) {
+            <p class="empty-state">Crée un utilisateur pour ouvrir une conversation.</p>
+          } @else {
+            @for (conversation of conversations(); track conversation.id) {
+              <button
+                class="conversation-item"
+                type="button"
+                [class.conversation-item-active]="conversation.id === activeSupportConversationId()"
+                (click)="selectSupportConversation(conversation.id)"
+              >
+                <strong>{{ conversation.userDisplayName }}</strong>
+                <span>{{ conversation.lastMessagePreview || 'Conversation ouverte, sans message.' }}</span>
+                <small>
+                  {{ (conversation.lastMessageAt || conversation.createdAt) | date: 'HH:mm:ss' }}
+                </small>
+              </button>
+            }
+          }
+        </aside>
+
+        <div class="support-chat">
+          <div class="conversation-meta">
+            @if (activeSupportConversation()) {
+              <span>{{ activeSupportConversation()?.userDisplayName }}</span>
+              <span>ID conversation: {{ activeSupportConversation()?.id }}</span>
+            } @else {
+              <span>Aucune conversation sélectionnée</span>
+            }
+          </div>
+
+          <section class="message-board">
+            @if (supportMessages().length === 0) {
+              <p class="empty-state">Aucun message pour le moment.</p>
+            } @else {
+              @for (message of supportMessages(); track message.id) {
+                <article class="message" [class.message-outgoing]="isOutgoingMessage(message, 'SUPPORT')">
+                  <p class="message-role">{{ message.senderRole === 'SUPPORT' ? 'Support' : 'Client' }}</p>
+                  <p class="message-body">{{ message.body }}</p>
+                  <time class="message-time">{{ message.sentAt | date: 'HH:mm:ss' }}</time>
+                </article>
+              }
+            }
+          </section>
+
+          <div class="composer">
+            <textarea
+              rows="3"
+              [ngModel]="supportDraft()"
+              (ngModelChange)="supportDraft.set($event)"
+              [disabled]="!activeSupportConversation()"
+              placeholder="Répondre côté support"
+            ></textarea>
+            <button class="secondary-button" type="button" (click)="sendSupportMessage()" [disabled]="!activeSupportConversation()">
+              Répondre
+            </button>
+          </div>
+        </div>
+      </section>
+    </article>
+  </section>
+</main>
