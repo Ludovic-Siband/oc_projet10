@@ -1,0 +1,25 @@
+sequenceDiagram
+    participant Client as Vue client Angular
+    participant Support as Vue support Angular
+    participant WS as Endpoint WebSocket /ws-chat
+    participant Controller as ChatMessageController
+    participant Service as ChatService
+    participant Topic as Topic /topic/conversations.{conversationId}
+
+    Note over Client,Support: Les deux vues ouvrent une connexion WebSocket vers /ws-chat
+
+    Client->>WS: Connexion WebSocket
+    Support->>WS: Connexion WebSocket
+
+    Client->>Topic: Abonnement a /topic/conversations.{conversationId}
+    Support->>Topic: Abonnement a /topic/conversations.{conversationId}
+
+    Client->>WS: publish /app/chat.send
+    WS->>Controller: Transmet le message entrant
+    Controller->>Service: addMessage(conversationId, senderRole, senderId, body)
+    Service-->>Controller: Message enrichi avec id et sentAt
+    Controller->>Topic: Diffuse le message
+    Topic-->>Client: Message temps reel
+    Topic-->>Support: Message temps reel
+
+    Controller->>Topic: Diffuse aussi le resume de conversation
