@@ -1,0 +1,52 @@
+flowchart LR
+    prospect["Prospect"]
+    client["Client"]
+    agence["Système d'agence"]
+    paiement["Prestataire de paiement"]
+
+    subgraph ycyw["Your Car Your Way - Application centralisée"]
+        ucCompte(("Créer un compte"))
+        ucAgences(("Consulter les agences"))
+        ucRecherche(("Rechercher des offres"))
+        ucResultats(("Consulter les résultats de recherche"))
+        ucDetail(("Consulter le détail d'une offre"))
+        ucProfil(("Consulter son profil"))
+        ucMajProfil(("Modifier son profil"))
+        ucSupprimer(("Supprimer son compte"))
+        ucReserver(("Réserver une offre"))
+        ucPayer(("Payer une réservation"))
+        ucConfirmation(("Consulter la confirmation de réservation"))
+        ucHistorique(("Consulter l'historique des réservations"))
+        ucModifier(("Modifier une réservation"))
+        ucAnnuler(("Annuler une réservation"))
+        ucTchat(("Échanger via le tchat d'assistance"))
+        ucApiLecture(("Consulter les données via API"))
+        ucApiCrud(("Créer, modifier ou supprimer des données via API"))
+    end
+
+    prospect --> ucAgences
+    prospect --> ucRecherche
+    prospect --> ucResultats
+    prospect --> ucDetail
+    prospect --> ucCompte
+
+    client --> ucAgences
+    client --> ucRecherche
+    client --> ucResultats
+    client --> ucDetail
+    client --> ucProfil
+    client --> ucMajProfil
+    client --> ucSupprimer
+    client --> ucReserver
+    client --> ucPayer
+    client --> ucConfirmation
+    client --> ucHistorique
+    client --> ucModifier
+    client --> ucAnnuler
+    client --> ucTchat
+
+    agence --> ucApiLecture
+    agence --> ucApiCrud
+
+    ucPayer -. service externe .-> paiement
+    ucPayer --> ucConfirmation

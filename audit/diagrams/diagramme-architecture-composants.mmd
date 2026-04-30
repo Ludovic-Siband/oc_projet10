@@ -1,0 +1,64 @@
+flowchart LR
+    Client["Client / Prospect"]
+    Agence["CRM's agence hors périmètre"]
+
+    subgraph Canal["Interface web"]
+        Web["Frontend web Angular 21"]
+    end
+
+    subgraph Exposition["Interfaces exposées par le backend"]
+        direction TB
+        Rest["API REST"]
+        Ws["Canal WebSocket"]
+    end
+
+    subgraph Coeur["Monolithe modulaire"]
+        Auth["Sécurité transverse
+authentification, rôles, scopes"]
+        subgraph Metier["Modules métier"]
+            Compte["Gestion du compte client"]
+            RefAgences["Référentiel agences"]
+            Offres["Offres et tarification"]
+            Reservation["Réservation"]
+            Paiement["Paiement"]
+            Historique["Historique réservations"]
+            Tchat["Tchat assistance"]
+        end
+    end
+
+    subgraph Donnees["Données"]
+        PG["PostgreSQL 18"]
+    end
+
+    subgraph Externes["Services externes"]
+        Stripe["Stripe"]
+    end
+
+    Client --> Web
+    Web --> Rest
+    Web --> Ws
+    Agence --> Rest
+    Agence --> Ws
+
+    Rest --> Auth
+    Ws --> Auth
+    Auth -. contrôle d'accès .-> Rest
+    Auth -. contrôle d'accès .-> Ws
+
+    Auth --> RefAgences
+    Auth --> Compte
+    Auth --> Offres
+    Auth --> Reservation
+    Auth --> Paiement
+    Auth --> Historique
+    Auth --> Tchat
+
+    Compte --> PG
+    RefAgences --> PG
+    Offres --> PG
+    Reservation --> PG
+    Paiement --> PG
+    Historique --> PG
+    Tchat --> PG
+
+    Paiement --> Stripe

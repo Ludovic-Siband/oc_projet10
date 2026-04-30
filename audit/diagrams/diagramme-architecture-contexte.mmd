@@ -1,0 +1,15 @@
+flowchart LR
+    Client[Client / Prospect]
+    Agence[CRM's agence hors périmètre]
+    Front[Application web Angular 21]
+    Core[Plateforme centralisée Java 25 / Spring Boot 4.0]
+    Data[(PostgreSQL 18)]
+    subgraph Tiers[Fournisseurs tiers]
+        Stripe[Stripe]
+    end
+
+    Client --> Front
+    Front --> Core
+    Core --> Data
+    Core --> Stripe
+    Agence --> Core

@@ -1,0 +1,16 @@
+sequenceDiagram
+    actor Client
+    participant Web as Frontend Angular 21
+    participant API as API réservation Spring Boot 4.0
+    participant Stripe as Stripe
+    participant DB as PostgreSQL 18
+
+    Client->>Web: Confirme la réservation
+    Web->>API: Crée la réservation provisoire
+    API->>DB: Enregistre réservation en attente
+    API->>Stripe: Initialise l'intention de paiement
+    Stripe-->>Web: URL ou session de paiement
+    Client->>Stripe: Réalise le paiement
+    Stripe-->>API: Retour de statut du paiement
+    API->>DB: Met à jour paiement et réservation
+    API-->>Web: Confirmation de réservation

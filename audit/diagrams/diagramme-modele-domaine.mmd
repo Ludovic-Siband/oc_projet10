@@ -1,0 +1,84 @@
+classDiagram
+    class Customer {
+      +UUID id
+      +string email
+      +string firstName
+      +string lastName
+      +date birthDate
+      +string locale
+      +string phone
+      +string streetAddress
+      +string postalCode
+      +string city
+      +string countryCode
+      +string status
+    }
+
+    class Agency {
+      +UUID id
+      +string code
+      +string countryCode
+      +string city
+      +string timezone
+    }
+
+    class VehicleCategory {
+      +UUID id
+      +string acrissCode
+      +string label
+    }
+
+    class VehicleModel {
+      +UUID id
+      +string make
+      +string modelName
+      +string status
+    }
+
+    class Offer {
+      +UUID id
+      +datetime pickupAt
+      +datetime dropoffAt
+      +decimal amount
+      +string currency
+    }
+
+    class Booking {
+      +UUID id
+      +string status
+      +datetime createdAt
+      +datetime cancellableUntil
+      +datetime modifiableUntil
+    }
+
+    class Payment {
+      +UUID id
+      +string provider
+      +string status
+      +decimal amount
+      +datetime paidAt
+    }
+
+    class Conversation {
+      +UUID id
+      +string status
+      +datetime createdAt
+    }
+
+    class Message {
+      +UUID id
+      +string senderType
+      +string body
+      +datetime sentAt
+    }
+
+    Customer "1" --> "0..*" Booking
+    Agency "1" --> "0..*" Offer : pickup
+    Agency "1" --> "0..*" Offer : dropoff
+    VehicleCategory "1" --> "0..*" VehicleModel
+    VehicleModel "1" --> "0..*" Offer
+    Offer "1" --> "0..*" Booking
+    Booking "1" --> "0..1" Payment
+    Customer "1" --> "0..*" Conversation
+    Booking "0..1" --> "0..*" Conversation
+    Conversation "1" --> "1..*" Message

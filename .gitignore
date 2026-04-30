@@ -1,0 +1,13 @@
+/AGENTS.md
+/context/
+/audit/html/
+
+# Local tool/cache files
+/.codex
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~

@@ -1,0 +1,87 @@
+erDiagram
+    CUSTOMER ||--o{ BOOKING : places
+    AGENCY ||--o{ OFFER : pickup_agency
+    AGENCY ||--o{ OFFER : dropoff_agency
+    VEHICLE_CATEGORY ||--o{ VEHICLE_MODEL : classifies
+    VEHICLE_MODEL ||--o{ OFFER : proposes
+    OFFER ||--o{ BOOKING : selected_for
+    BOOKING ||--o| PAYMENT : settled_by
+    CUSTOMER ||--o{ CONVERSATION : opens
+    BOOKING o|--o{ CONVERSATION : relates_to
+    CONVERSATION ||--o{ MESSAGE : contains
+
+    CUSTOMER {
+        uuid id PK
+        string email
+        string first_name
+        string last_name
+        date birth_date
+        string locale
+        string phone
+        string street_address
+        string postal_code
+        string city
+        string country_code
+        string status
+    }
+    AGENCY {
+        uuid id PK
+        string code
+        string country_code
+        string city
+        string timezone
+    }
+    VEHICLE_CATEGORY {
+        uuid id PK
+        string acriss_code UK
+        string default_label
+    }
+    VEHICLE_MODEL {
+        uuid id PK
+        uuid vehicle_category_id FK
+        string make
+        string model_name
+        string status
+    }
+    OFFER {
+        uuid id PK
+        uuid pickup_agency_id FK
+        uuid dropoff_agency_id FK
+        uuid vehicle_model_id FK
+        timestamptz pickup_at
+        timestamptz dropoff_at
+        numeric amount
+        string currency
+    }
+    BOOKING {
+        uuid id PK
+        uuid customer_id FK
+        uuid offer_id FK
+        string status
+        timestamptz created_at
+        timestamptz modifiable_until
+        timestamptz cancellable_until
+    }
+    PAYMENT {
+        uuid id PK
+        uuid booking_id FK
+        string provider
+        string provider_reference
+        string status
+        numeric amount
+        timestamptz paid_at
+    }
+    CONVERSATION {
+        uuid id PK
+        uuid customer_id FK
+        uuid booking_id FK
+        string status
+        timestamptz created_at
+    }
+    MESSAGE {
+        uuid id PK
+        uuid conversation_id FK
+        string sender_type
+        text body
+        timestamptz sent_at
+    }

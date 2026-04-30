@@ -1,0 +1,29 @@
+flowchart TB
+    Client["Client / Prospect"]
+    Agence["CRM's agence hors périmètre"]
+
+    subgraph K8S["Cluster Kubernetes managé"]
+        FrontPods["Pods frontend Angular 21"]
+        ApiPods["Pods backend Java 25 / Spring Boot 4.0"]
+        Postgres["Pods PostgreSQL 18"]
+        ELK["Pods ELK"]
+        Vault["Pods Vault"]
+    end
+
+    Storage["Stockage des sauvegardes"]
+
+    subgraph Third["Services externes"]
+        Stripe["Stripe"]
+    end
+
+    Client --> FrontPods
+    FrontPods --> ApiPods
+    Agence --> ApiPods
+
+    ApiPods --> Postgres
+    ApiPods --> Vault
+    ApiPods --> ELK
+    ApiPods --> Stripe
+
+    Postgres --> Storage
+    Vault --> Storage

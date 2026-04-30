@@ -1,0 +1,12 @@
+flowchart LR
+    Client[Client]
+    UI[Interface tchat]
+    Metier[Outil conseiller hors
+     périmètre]
+    subgraph Backend["Backend Spring Boot PoC"]
+        WS[Canal WebSocket]
+    end
+
+    Client --> UI
+    Metier --> WS
+    UI --> WS
